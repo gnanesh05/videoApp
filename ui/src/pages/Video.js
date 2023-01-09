@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
@@ -6,6 +6,9 @@ import ShareIcon from '@mui/icons-material/Share';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import Comments from '../components/Comments.js';
 import Card from '../components/Card.js'
+import { useSelector, useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import  axios from 'axios';
 
 const Container = styled.div`
 display: flex;
@@ -99,6 +102,25 @@ font-size: 14px;
 `
 
 const Video = () => {
+  const {currentUser} = useSelector((state)=>state.user)
+  const dispatch = useDispatch()
+
+  const path = useLocation().pathname.split('/')[2]
+  const [video, setVideo] = useState({})
+  const [channel, setChannel] = useState({})
+
+  useEffect(() => {
+    const fetchData = async()=>{
+      const videoRes = await axios.get(`/videos/${path}`)
+      const channelRes = await axios.get(`/users/find/${videoRes.userId}`)
+      console.log(videoRes)
+      console.log(channelRes)
+      setVideo(videoRes.data)
+      setChannel(channelRes.data )
+    }
+    fetchData()
+  },[])
+
   return (
     <Container>
       <Content>
@@ -133,7 +155,7 @@ const Video = () => {
           <Comments/>
         </VideoWrapper>
       </Content>
-      <Recommendations>
+      {/* <Recommendations>
         <Card type="sm"/>
         <Card type="sm"/>
         <Card type="sm"/>
@@ -141,7 +163,7 @@ const Video = () => {
         <Card type="sm"/>
         <Card type="sm"/>
         <Card type="sm"/>
-      </Recommendations>
+      </Recommendations> */}
 
     </Container>
   )

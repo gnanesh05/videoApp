@@ -83,8 +83,7 @@ const Navbar = () => {
         {
           currentUser ? (
             <User>
-              < AccountCircleIcon/>
-              <Avatar/>
+              <Avatar src={currentUser.image}/>
                 {currentUser.name}
             </User>
           ) : ( 
