@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import {format} from 'timeago.js'
+//import {format} from 'timeago.js'
 import axios from 'axios'
 
 const Container = styled.div`
@@ -68,7 +68,7 @@ const Card = ({type, video}) => {
 
 
   return (
-    <Link to={`video/:${video._id}`} style={{"textDecoration" : "none"}}>
+    <Link to={`video/${video._id}`} style={{"textDecoration" : "none"}}>
       <Container type={type}>
         <Image  type={type}
         src={video.imgUrl}
@@ -81,7 +81,7 @@ const Card = ({type, video}) => {
           <Text>
             <Title>{video.title}</Title>
             <ChannelName>{video.name}</ChannelName>
-            <Info>{video.views} views. {format(video.createdAt)}</Info>
+            <Info>{video.views} views. {video.createdAt}</Info>
           </Text>
         </Details>
       </Container>

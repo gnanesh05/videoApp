@@ -76,15 +76,16 @@ export const unsubscribe = async(req, res, next)=>{
 
 export const like = async(req, res, next)=>{
     const id = req.user.id
-    const videoId = req.params.id
+    const videoId = req.params.videoid
+    
 
     try {
-        await Video.findByIdAndUpdate(videoId,{
+      await Video.findByIdAndUpdate(videoId,{
             $addToSet:{likes:id},
             $pull:{dislikes:id}
         })
-
-        res.status(200).json("video liked")
+       
+       return res.status(200).json("video liked")
     } 
     catch (error) {
         next(error)
@@ -101,7 +102,7 @@ export const dislike = async(req, res, next)=>{
             $pull:{likes:id}
         })
 
-        res.status(200).json("video disliked")
+       return res.status(200).json("video disliked")
     } 
     catch (error) {
         next(error)

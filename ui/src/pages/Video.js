@@ -2,6 +2,10 @@ import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ShareIcon from '@mui/icons-material/Share';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import Comments from '../components/Comments.js';
@@ -9,6 +13,8 @@ import Card from '../components/Card.js'
 import { useSelector, useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import  axios from 'axios';
+//import {format} from 'timeago.js'
+import { dislike, fetchFailure, fetchStart, fetchSuccess, like } from '../redux/videoSlice.js';
 
 const Container = styled.div`
 display: flex;
@@ -103,34 +109,65 @@ font-size: 14px;
 
 const Video = () => {
   const {currentUser} = useSelector((state)=>state.user)
+  const {currentVideo} = useSelector((state)=>state.video)
   const dispatch = useDispatch()
 
   const path = useLocation().pathname.split('/')[2]
-  const [video, setVideo] = useState({})
   const [channel, setChannel] = useState({})
 
+  const handleLike = async()=>{
+    try {
+      console.log(currentVideo._id)
+      await axios.put(`/users/like/${currentVideo._id}`)
+      dispatch(like(currentUser._id))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const handleDislike = async()=>{
+    try {
+      await axios.put(`/users/dislike/${currentVideo._id}`)
+      dispatch(dislike(currentUser._id))
+    } catch (error) {
+      console.log(error)
+    }
+  }
   useEffect(() => {
     const fetchData = async()=>{
-      const videoRes = await axios.get(`/videos/${path}`)
-      const channelRes = await axios.get(`/users/find/${videoRes.userId}`)
-      console.log(videoRes)
-      console.log(channelRes)
-      setVideo(videoRes.data)
-      setChannel(channelRes.data )
+      try{
+        dispatch(fetchStart())
+        const videoRes = await axios.get(`/videos/find/${path}`)
+        const channelRes = await axios.get(`/users/find/${videoRes.data.userId}`)
+        console.log(videoRes)
+        console.log(channelRes)
+        setChannel(channelRes.data )
+        dispatch(fetchSuccess(videoRes.data))
+      }
+      catch(error){
+          console.error(error)
+         dispatch(fetchFailure())
+      }
+     
     }
     fetchData()
-  },[])
+  },[path, dispatch])
 
   return (
     <Container>
       <Content>
         <VideoWrapper>
-          <Title>Test Video</Title>
+          <Title>{currentVideo.title}</Title>
           <Details>
-            <Info>7,984,567 views. June 5 2022</Info>
+            <Info>{currentVideo.views} views. {currentVideo.createdAt}</Info>
             <Buttons>
-                <Button> <ThumbUpAltIcon/> 123K</Button>
-                <Button> <ThumbDownIcon/> DisLike </Button>
+                <Button onClick={handleLike}>
+                  {currentVideo.likes?.includes(currentUser._id) ? <ThumbUpAltIcon/>  : <ThumbUpOffAltIcon/>}
+                   {currentVideo.likes?.length}K
+                </Button>
+                <Button onClick={handleDislike}> 
+                  {currentVideo.dislikes?.includes(currentUser._id) ? <ThumbDownIcon/> : <ThumbDownOffAltIcon/> }
+                   DisLike 
+                </Button>
                 <Button> <ShareIcon/> Share </Button>
                 <Button> <BookmarkIcon/> Save </Button>
             </Buttons>
@@ -138,13 +175,12 @@ const Video = () => {
           <Hr/>
           <Channel>
             <ChannelInfo>
-              <Image src="https://www.tailorbrands.com/wp-content/uploads/2021/06/Marshal-Kiganjo.jpg"/>
+              <Image src={channel.img}/>
               <ChannelDetail>
-                <ChannelName>Gnanesh</ChannelName>
-                <ChannelCounter>565K Subscribers</ChannelCounter>
+                <ChannelName>{channel.name}</ChannelName>
+                <ChannelCounter>{channel.subscribers} Subscribers</ChannelCounter>
                 <Description>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum, consequuntur possimus natus vero enim magnam,
-                   vel inventore impedit optio minus cupiditate ullam atque recusandae aliquam, voluptas vitae ipsa sapiente excepturi.
+                    {currentVideo.description}
                 </Description>
 
               </ChannelDetail>
