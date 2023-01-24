@@ -11,10 +11,11 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import Comments from '../components/Comments.js';
 import Card from '../components/Card.js'
 import { useSelector, useDispatch } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation,useNavigate } from 'react-router-dom';
 import  axios from 'axios';
 //import {format} from 'timeago.js'
 import { dislike, fetchFailure, fetchStart, fetchSuccess, like } from '../redux/videoSlice.js';
+import { subscription } from '../redux/userSlice.js';
 
 const Container = styled.div`
 display: flex;
@@ -106,10 +107,15 @@ font-size: 12px;
 const Description = styled.p`
 font-size: 14px;
 `
-
+const VideoFrame = styled.video`
+max-height: 720px;
+width: 100%;
+object-fit: cover;
+`
 const Video = () => {
   const {currentUser} = useSelector((state)=>state.user)
   const {currentVideo} = useSelector((state)=>state.video)
+  const navigate = useNavigate();
   const dispatch = useDispatch()
 
   const path = useLocation().pathname.split('/')[2]
@@ -132,6 +138,16 @@ const Video = () => {
       console.log(error)
     }
   }
+
+  const handleSubscribe = async()=>{
+    try {
+      currentUser.subscribedUsers.includes(channel._id) ? await axios.put(`/users/sub/${channel._id}`) 
+      : await axios.put(`/users/unsub/${channel._id}`)
+      dispatch(subscription(currentUser._id))
+    } catch (error) {
+      console.log(error)
+    }
+  }
   useEffect(() => {
     const fetchData = async()=>{
       try{
@@ -149,13 +165,19 @@ const Video = () => {
       }
      
     }
+ 
+    if(!currentUser)
+       navigate("/signin")
+
     fetchData()
-  },[path, dispatch])
+  },[path, dispatch, navigate, currentUser])
 
   return (
     <Container>
       <Content>
         <VideoWrapper>
+          <VideoFrame src={currentVideo.videoUrl} />
+        </VideoWrapper>
           <Title>{currentVideo.title}</Title>
           <Details>
             <Info>{currentVideo.views} views. {currentVideo.createdAt}</Info>
@@ -185,11 +207,13 @@ const Video = () => {
 
               </ChannelDetail>
             </ChannelInfo>
-            <Subscribe>Subscribe</Subscribe>
+            <Subscribe onClick={handleSubscribe}>
+              {currentUser.subscribedUsers?.includes(currentUser._id)? "SUBSCRIBED" :"SUBSCRIBE" }
+            </Subscribe>
           </Channel>
           <Hr/>
-          <Comments/>
-        </VideoWrapper>
+          <Comments videoId={currentVideo._id}/>
+       
       </Content>
       {/* <Recommendations>
         <Card type="sm"/>

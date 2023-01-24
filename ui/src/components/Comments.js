@@ -1,6 +1,8 @@
-import React from 'react'
+import React,{useState, useEffect} from 'react'
 import styled from 'styled-components'
 import Comment from './Comment.js'
+import { useSelector, useDispatch } from 'react-redux';
+import axios from 'axios';
 
 const Container = styled.div``
 const NewComment = styled.div`
@@ -23,18 +25,32 @@ color: ${({theme})=>theme.text};
 width: 100%;
 `
 
-const Comments = () => {
+const Comments = ({videoId}) => {
+  const [comments, setComments] =  useState([])
+  const {currentUser} = useSelector((state)=>state.user)
+  const dispatch = useDispatch()
+  useEffect(() => {
+     const fetchComments = async()=>{
+      try{
+          const res = await axios.get(`/comments/${videoId}`)
+          setComments(res.data)
+      }
+      catch(error){
+       console.log(error)
+      }
+     }
+  }, [videoId])
   return (
     <Container>
         <NewComment>
-            <Avatar src="https://www.tailorbrands.com/wp-content/uploads/2021/06/Marshal-Kiganjo.jpg"/>
+            <Avatar src={currentUser.img}/>
             <Input placeholder="add a comment"/>
         </NewComment>
-        <Comment/>
-        <Comment/>
-        <Comment/>
-        <Comment/>
-        <Comment/>
+       
+        {
+          comments.map((comment)=>(<Comment key={comment._id} commet={comment}/>))
+        }
+        
     </Container>
   )
 }

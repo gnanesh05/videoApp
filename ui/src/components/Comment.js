@@ -1,5 +1,6 @@
-import React from 'react'
+import React,{useState, useEffect} from 'react'
 import styled from 'styled-components'
+import axios from 'axios'
 
 const Container = styled.div`
 display: flex;
@@ -30,15 +31,32 @@ margin-left: 5px;
 const Text = styled.span`
 font-size: 14px;
 `
-const Comment = () => {
+const Comment = ({comment}) => {
+  const [channel, setChannel] = useState({})
+  useEffect(() => {
+    const fetchData = async()=>{
+      try{
+
+        const channelRes = await axios.get(`/users/find/${comment.userId}`)
+        console.log(channelRes)
+        setChannel(channelRes.data )
+      }
+      catch(error){
+          console.error(error)
+         
+      }
+     
+    }
+    fetchData()
+  
+  }, [comment.userId])
   return (
     <Container>
-      <Avatar src="https://www.tailorbrands.com/wp-content/uploads/2021/06/Marshal-Kiganjo.jpg" />
+      <Avatar src={channel.img} />
       <Details>
-        <Name>John Doe <Date>1 day ago</Date> </Name>
+        <Name>{channel.name} <Date>1 day ago</Date> </Name>
         <Text>
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aperiam aspernatur ratione magni, accusamus fugiat saepe quisquam, dolores voluptas ullam deserunt 
-          a dignissimos maiores veniam ipsam, quasi neque facilis nihil odio.
+          {comment.desc}
         </Text>
       </Details>
     </Container>
