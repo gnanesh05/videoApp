@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux'
 import { loginFailure, loginStart, loginSuccess } from '../redux/userSlice'
 import {auth, provider} from '../firebase.js'
 import { signInWithPopup } from 'firebase/auth'
+import {useNavigate } from 'react-router-dom';
 
 
 const Container = styled.div`
@@ -74,6 +75,7 @@ const Signin = () => {
   const [password, setPassword] = useState('')
   const [email, setEmail] = useState('')
   const dispatch = useDispatch()
+  const navigate = useNavigate();
   
   const handleSignin = async (e)=>{
     e.preventDefault()
@@ -85,6 +87,7 @@ const Signin = () => {
       const res = await axios.post('/auth/signin' , {name:username, password})
       dispatch(loginSuccess(res.data))
       console.log(res.data)
+      navigate("/")
     } 
     catch (error) {
       dispatch(loginFailure())

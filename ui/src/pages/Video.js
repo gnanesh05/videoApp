@@ -2,8 +2,6 @@ import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
-import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ShareIcon from '@mui/icons-material/Share';
@@ -15,7 +13,7 @@ import { useLocation,useNavigate } from 'react-router-dom';
 import  axios from 'axios';
 //import {format} from 'timeago.js'
 import { dislike, fetchFailure, fetchStart, fetchSuccess, like } from '../redux/videoSlice.js';
-import { subscription } from '../redux/userSlice.js';
+import { subscription, logout } from '../redux/userSlice.js';
 
 const Container = styled.div`
 display: flex;
@@ -151,14 +149,21 @@ const Video = () => {
   useEffect(() => {
     const fetchData = async()=>{
       try{
+        console.log("starting")
         dispatch(fetchStart())
         const videoRes = await axios.get(`/videos/find/${path}`)
         const channelRes = await axios.get(`/users/find/${videoRes.data.userId}`)
         setChannel(channelRes.data )
         dispatch(fetchSuccess(videoRes.data))
+       // dispatch(logout())
       }
       catch(error){
           console.error(error)
+          if(error.status===404)
+            {
+              dispatch(logout())
+              navigate("/signin")
+            }
          dispatch(fetchFailure())
       }
      
@@ -169,7 +174,7 @@ const Video = () => {
 
     fetchData()
   },[path, dispatch, navigate, currentUser])
-
+ 
   return (
     <Container>
       <Content>
