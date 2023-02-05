@@ -7,13 +7,13 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ShareIcon from '@mui/icons-material/Share';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import Comments from '../components/Comments.js';
-import Card from '../components/Card.js'
 import { useSelector, useDispatch } from 'react-redux';
 import { useLocation,useNavigate } from 'react-router-dom';
 import  axios from 'axios';
 //import {format} from 'timeago.js'
 import { dislike, fetchFailure, fetchStart, fetchSuccess, like } from '../redux/videoSlice.js';
 import { subscription, logout } from '../redux/userSlice.js';
+import Recommendation from '../components/Recommendation.js';
 
 const Container = styled.div`
 display: flex;
@@ -23,10 +23,7 @@ const Content = styled.div`
 flex:5;
 
 `
-const Recommendations = styled.div`
-flex: 2;
 
-`
 
 const VideoWrapper = styled.div`
 `
@@ -179,7 +176,7 @@ const Video = () => {
     <Container>
       <Content>
         <VideoWrapper>
-          <VideoFrame src={currentVideo.videoUrl} />
+          <VideoFrame src={currentVideo.videoUrl} controls/>
         </VideoWrapper>
           <Title>{currentVideo.title}</Title>
           <Details>
@@ -218,16 +215,7 @@ const Video = () => {
           <Comments videoId={currentVideo._id}/>
        
       </Content>
-      {/* <Recommendations>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-      </Recommendations> */}
-
+      <Recommendation tags={currentVideo.tags}/>
     </Container>
   )
 }

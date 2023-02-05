@@ -85,10 +85,11 @@ const Upload = ({setOpen}) => {
       const storage = getStorage(app);
       const fileName = new Date().getTime() + file.name
       // Create a reference to 'mountains.jpg'
-      const storageRef = ref(storage, fileName);
       const metadata = {
-        contentType: 'image/jpeg'
+        contentType: 'image/jpeg',
       };
+      const storageRef = ref(storage, fileName);
+      
       const uploadTask = uploadBytesResumable(storageRef, file, metadata);
 
       // Listen for state changes, errors, and completion of the upload.
@@ -103,7 +104,7 @@ const Upload = ({setOpen}) => {
               console.log('Upload is paused');
               break;
             case 'running':
-              console.log('Upload is running');
+              console.log('Upl  oad is running');
               break;
             default:
               break;
@@ -124,6 +125,7 @@ const Upload = ({setOpen}) => {
     const handleSubmit = async(e)=>{
       e.preventDefault()
       try{
+        console.log(input)
         const res = await axios.post('/videos', {...input, tags})
         res.status===200 && navigate(`/videos/${res.data._id}`)
         setOpen(false)
@@ -142,19 +144,23 @@ const Upload = ({setOpen}) => {
     }
       ,[image])
 
+      const onclick =()=>console.log("input")
   return (
     <Container>
         <Wrapper>
             <Close onClick={()=>setOpen(false)}>X</Close>
-            <Title>Upload new Video</Title>
+            <Title >Upload new Video</Title>
+           
+            <Input type="text" placeholder="Title" name='title' onClick={()=>console.log("title input")}  onChange={handleInput}/>
             <Label>Upload video file</Label>
             {
-              videoPer>0? ("File Uploading ..."+videoPer+"%") :
-               ( <Input type="file" accept="video/*" onChange={e=>setVideo(e.target.files[0])}/>)
+              
+               videoPer>0 ? ("File uploading... "+videoPer+"%") 
+              : ( <Input   type="file" accept="video/*"  onChange={e=>setVideo(e.target.files[0])}/>)
+
             }
            
-            <Input type="text" placeholder="Title" name='title'   onChange={handleInput}/>
-            <Desc placeholder='Description' name='desc' onChange={handleInput}  rows={8}/>
+            <Desc placeholder='Description' onClick={onclick} name='description' onChange={handleInput}  rows={8}/>
             <Input type="text" placeholder='Enter hashtags with comma' 
             onChange={e=>setTags(e.target.value.split(","))} value={tags}/>
             <Label>Upload thumbnail image</Label>
