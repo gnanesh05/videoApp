@@ -134,9 +134,10 @@ export const deleteVideo = async(req, res, next)=>{
 
 export const getByTags = async(req, res, next)=>{
   
-    console.log(req.query)
+    console.log("getting req.query",req.query)
     const tags = req.query.tags.split(",")
-    console.log("tags --", tags)
+    console.log(tags)
+   
     try {
         //gets videos with the tags
         const videos = await Video.find({tags:{$in:tags}}).limit(20) 

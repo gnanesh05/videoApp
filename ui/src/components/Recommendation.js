@@ -8,19 +8,18 @@ flex: 2;
 
 `
 const Recommendation = ({tags}) => {
-    console.log(tags)
+    
     const [videos, setVideos] = useState([])
 
-    useEffect(()=>{
-        const fetchVideos = async()=>{
-            console.log(`videos/tags?tags=${tags}`)
-            const res = await axios.get(`videos/tags?tags=${tags}`)
-            console.log(res.data)
-            setVideos(res.data)
-        }
-
-        fetchVideos()
-    },[tags])
+    useEffect(() => {
+        const fetchVideos = async () => {
+            //console.log(`/videos/tags?tags=${tags.join(",")}`)
+          const res = await axios.get(`/videos/tags?tags=${tags}`);
+          setVideos(res.data);
+        };
+        fetchVideos();
+      }, [tags]);
+    
 
   return (
     <Container>

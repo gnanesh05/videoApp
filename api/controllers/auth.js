@@ -25,7 +25,7 @@ export const signup = async(req,res, next)=>{
 
 export const signin = async(req,res, next)=>{
     try{
-        console.log(req.body)
+        
      const user  = await User.findOne({name: req.body.name})
      if(!user) 
      {
