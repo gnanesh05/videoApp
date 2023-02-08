@@ -24,8 +24,8 @@ const Recommendation = ({tags}) => {
   return (
     <Container>
         Recommendation
-        {videos.map((video)=>(
-            <Card id={video._id} video={video}/>
+        {videos.map((video, id)=>(
+            <Card key={id} type="sm" id={video._id} video={video}/>
         ))}
     </Container>
   )

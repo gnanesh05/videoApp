@@ -38,6 +38,7 @@ justify-content: space-between;
 padding: 5px;
 border: 1px solid #ccc;
 border-radius: 3px;
+color: ${({theme})=>theme.text};
 
 `
 const Input = styled.input`
@@ -91,6 +92,7 @@ background-color: #999;
 const Navbar = () => {
   const {currentUser} = useSelector(state=>state.user)
   const[open, setOpen] = useState(false)
+  const[query, setQuery] = useState("")
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const handleSignOut = ()=>{
@@ -103,7 +105,7 @@ const Navbar = () => {
       <Container>
       <Wrapper>
         <SearchBar>
-          <Input placeholder="Search"/>
+          <Input placeholder="Search" onChange={(e)=>setQuery(e.target.value)}/>
           <SearchIcon/>
         </SearchBar>
         {
