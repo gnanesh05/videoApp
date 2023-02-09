@@ -9,6 +9,7 @@ const Container = styled.div`
   margin-bottom: ${(props) => (props.type === "sm" ? "10px" : "45px")};
   cursor: pointer;
   display: ${(props) => props.type === "sm" && "flex"};
+  
   gap: 10px;
 `;
 

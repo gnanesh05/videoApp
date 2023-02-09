@@ -134,14 +134,12 @@ export const deleteVideo = async(req, res, next)=>{
 
 export const getByTags = async(req, res, next)=>{
   
-    console.log("getting req.query",req.query)
     const tags = req.query.tags.split(",")
-    console.log(tags)
+ 
    
     try {
         //gets videos with the tags
         const videos = await Video.find({tags:{$in:tags}}).limit(20) 
-        videos[0].tags === tags ? console.log("same tag--", videos[0].tags) : console.log("not same tag--", videos[0].tags)
          res.status(200).json(videos)
        
     } catch (error) {

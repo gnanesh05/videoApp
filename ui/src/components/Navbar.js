@@ -46,6 +46,7 @@ border: none;
 outline: none;
 background-color: transparent;
 width: 100%;
+color: ${({theme})=>theme.text};
 `
 
 const Button = styled.button`
@@ -106,7 +107,7 @@ const Navbar = () => {
       <Wrapper>
         <SearchBar>
           <Input placeholder="Search" onChange={(e)=>setQuery(e.target.value)}/>
-          <SearchIcon/>
+          <SearchIcon onClick={()=>navigate(`/search?q=${query}`)}/>
         </SearchBar>
         {
           currentUser ? (

@@ -19,10 +19,12 @@ import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import SettingsBrightnessOutlinedIcon from "@mui/icons-material/SettingsBrightnessOutlined";
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+
+
 const Container = styled.div`
 flex: 1;
 background-color: ${({theme})=>theme.bg};
-height: 100vh;
+height: 100%;
 color: ${({theme})=>theme.text};
 font-size: 14px;
 position: sticky;

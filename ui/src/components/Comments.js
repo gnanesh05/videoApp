@@ -24,9 +24,22 @@ padding: 5px;
 color: ${({theme})=>theme.text};
 width: 100%;
 `
-
+const SignOut = styled.button`
+padding: 5px 15px;
+color: #909090;
+background-color: rgba(0,0,0,0.05);
+border: 1px solid grey;
+border-radius: 10px;
+font-weight: 300;
+margin-top: 10px;
+cursor: pointer;
+display: flex;
+align-items: center;
+gap: 5px;
+`
 const Comments = ({videoId}) => {
   const [comments, setComments] =  useState([])
+  const [newComment, setNewComment] = useState("")
   const {currentUser} = useSelector((state)=>state.user)
   const dispatch = useDispatch()
   useEffect(() => {
@@ -44,7 +57,8 @@ const Comments = ({videoId}) => {
     <Container>
         <NewComment>
             <Avatar src={currentUser.img}/>
-            <Input placeholder="add a comment"/>
+            <Input placeholder="add a comment" onChange={(e)=>setNewComment(e.target.value)}/>
+            <SignOut>Comment</SignOut>
         </NewComment>
        
         {
